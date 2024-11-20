@@ -1,0 +1,30 @@
+services:
+  front:
+    build:
+      context: ./front
+      target: dev
+    volumes:
+      - ./front:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - reverseproxy-network
+
+  caddy:
+    image: caddy
+    ports:
+      - 80:80
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - front
+    networks:
+      - reverseproxy-network
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  reverseproxy-network:
